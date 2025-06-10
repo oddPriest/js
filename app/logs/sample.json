@@ -1,0 +1,77 @@
+[
+   {
+      "targetDate": "2025/6/5",
+      "recordDate": "2025/6/5 12:00:00",
+      "type": "遅刻"
+   },
+   {
+      "recordDate": "2025/6/6 16:14:03",
+      "targetDate": null,
+      "type": "遅刻"
+   },
+   {
+      "recordDate": "2025/6/6 16:14:30",
+      "targetDate": "2025-06-04",
+      "type": "欠席"
+   },
+   {
+      "recordDate": "2025/6/6 16:24:15",
+      "targetDate": null,
+      "type": "遅刻"
+   },
+   {
+      "recordDate": "2025/6/6 21:52:37",
+      "targetDate": "2025-06-20",
+      "type": "遅刻"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "遅刻"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "遅刻"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "遅刻"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "遅刻"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "早退"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "早退"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "早退"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "早退"
+   },
+   {
+      "recordDate": "2025/6/9 14:39:17",
+      "targetDate": null,
+      "type": "早退"
+   },
+   {
+      "recordDate": "2025/6/10 11:14:52",
+      "targetDate": "一括入力",
+      "type": "遅刻"
+   }
+]
