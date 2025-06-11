@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}申請フォーム{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">申請フォーム</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">送信</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}打刻修正{% endblock %}
+
+{% block content %}
+<h1 class="text-center">打刻修正ページ</h1>
+<form method="post" class="mt-4">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="clock_in" class="form-label">出勤</label>
+        <input type="datetime-local" id="clock_in" name="clock_in" class="form-control" 
+               value="{{ attendance.clock_in|date:'Y-m-d\TH:i' }}">
+    </div>
+    <div class="mb-3">
+        <label for="break_start" class="form-label">休憩開始</label>
+        <input type="datetime-local" id="break_start" name="break_start" class="form-control" 
+               value="{{ attendance.break_start|date:'Y-m-d\TH:i' }}">
+    </div>
+    <div class="mb-3">
+        <label for="break_end" class="form-label">休憩終了</label>
+        <input type="datetime-local" id="break_end" name="break_end" class="form-control" 
+               value="{{ attendance.break_end|date:'Y-m-d\TH:i' }}">
+    </div>
+    <div class="mb-3">
+        <label for="clock_out" class="form-label">退勤</label>
+        <input type="datetime-local" id="clock_out" name="clock_out" class="form-control" 
+               value="{{ attendance.clock_out|date:'Y-m-d\TH:i' }}">
+    </div>
+
+    <!--管理者のみ表示-->
+    <!-- <div class="text-center">
+        <button type="submit" class="btn btn-success">適用</button>
+        <a href="{% url 'attendance_history' %}" class="btn btn-secondary">キャンセル</a>
+    </div> -->
+
+</form>
+{% endblock %}
