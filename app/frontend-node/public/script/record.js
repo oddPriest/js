@@ -2,9 +2,8 @@ const fetchUsername = document.getElementById('username');
 const userSelect = document.getElementById('userSelect'); 
 const fetchTargetDate = document.getElementById('targetDate');
 
-document.getElementById('btnLate').addEventListener('click', () => record('late'));
-document.getElementById('btnEarly').addEventListener('click', () => record('early'));
-document.getElementById('btnAbsent').addEventListener('click', () => record('absence'));
+document.getElementById('btnCum').addEventListener('click', () => record('cum'));
+document.getElementById('btnNone').addEventListener('click', () => record('none'));
 
 async function record(type) {
   const username = fetchUsername.value.trim() || userSelect.value;
@@ -26,7 +25,7 @@ async function record(type) {
 
 
     if (res.ok) {
-      alert(`${targetDate || "該当日：指定なし"} に ${type === 'late' ? '遅刻' : type === 'early' ? '早退' : '欠席'}を記録しました。\n[累計] 遅刻:${data.late} / 早退:${data.early} / 欠席換算:${data.absence}`);
+      alert(`${targetDate || "該当日：指定なし"} に ${type === 'cum' ? '発射' : type === '不能'}を記録しました。\n[累計] 可動:${data.cum} / 不動:${data.none}`);
     
     } else { // エラー時の処理
       alert(data.message || "記録に失敗しました。(エラー)", true);

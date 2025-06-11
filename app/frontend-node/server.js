@@ -30,11 +30,11 @@ function saveUserLog(username, logs) {
 }
 // 遅刻と早退(計3回)を欠席1回として計上する
 function calculateAbsences(logs) {
-    const late = logs.filter(log => log.type === '遅刻').length;
-    const early = logs.filter(log => log.type === '早退').length;
-    const absence = logs.filter(log => log.type === '欠席').length;
-    const totalAbsence = Math.floor((late + early) / 3) + absence;
-    return { late, early, absence: totalAbsence };
+    const cum = logs.filter(log => log.type === '遅刻').length;
+    const none = logs.filter(log => log.type === '早退').length;
+    // 不能数の連続により警告
+    const emergencyMsg = Math.floor(none);
+    return { cum, none, emergencyMsg };
 }
 
 const sendFile = (res, filePath, contentType) => {
@@ -65,9 +65,8 @@ if (method === 'POST' && parsedUrl.pathname === '/log') {
             } = JSON.parse(body);
 
             const typeMap = {
-                late: '遅刻',
-                early: '早退',
-                absence: '欠席'
+                cum: '発射',
+                none: '不能'
             };
 
             const jpType = typeMap[type];
