@@ -178,3 +178,184 @@ CORS_ALLOW_ALL_ORIGINS = True  # または CORS_ALLOWED_ORIGINS = ['http://local
 
 (試案)
 ・ 取得DBをもとにFastAPIを用いて、機械学習によってユーザーにレスポンス(提案やFBなど)
+
+Python（Flask）でバックエンド、Node.js の http-server を用いた静的ファイルサーバーとしてフロントエンドを構成する勤怠管理アプリの基本的な構成と実装手順は以下のとおりです。
+
+⸻
+
+🌐 アーキテクチャ概要
+
+[ブラウザ]
+    │
+    ├── HTTP リクエスト
+    │
+[Node.js http-server（HTML/CSS/JSの静的ファイル）]
+    │      ↑ JavaScript (fetch)
+    │
+[Flask (Python) API サーバー（データベース処理）]
+    │
+[SQLite / MySQL / PostgreSQL など]
+
+
+⸻
+
+🛠️ 使用技術
+
+機能	技術
+フロントエンド	HTML / CSS / JavaScript (Fetch API)
+フロント配信	Node.js http-server
+バックエンド	Flask (Python)
+データベース	SQLite（または任意のRDB）
+
+
+⸻
+
+📁 ディレクトリ構成例
+
+attendance-app/
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   └── main.js      ← FlaskにAPIリクエストを送る
+├── backend/
+│   ├── app.py       ← Flaskアプリ（APIエンドポイント）
+│   └── db.sqlite3   ← SQLiteデータベース
+└── package.json     ← http-serverの設定用（オプション）
+
+
+⸻
+
+🔧 1. Flask APIの実装（backend/app.py）
+
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import sqlite3
+
+app = Flask(__name__)
+CORS(app)  # フロントエンドからのリクエストを許可
+
+DB_PATH = 'db.sqlite3'
+
+@app.route("/api/record", methods=["POST"])
+def record_attendance():
+    data = request.json
+    user = data.get("user")
+    date = data.get("date")
+    status = data.get("status")  # 出勤、遅刻、早退など
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("INSERT INTO attendance (user, date, status) VALUES (?, ?, ?)", (user, date, status))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "記録しました"})
+
+@app.route("/api/history", methods=["GET"])
+def get_history():
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("SELECT user, date, status FROM attendance")
+    rows = cur.fetchall()
+    conn.close()
+    return jsonify(rows)
+
+if __name__ == "__main__":
+    app.run(port=5000)
+
+🔸 SQLite用テーブル作成スクリプト（初回実行用）
+
+CREATE TABLE attendance (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user TEXT,
+    date TEXT,
+    status TEXT
+);
+
+
+⸻
+
+🖥️ 2. フロントエンド（frontend/index.html）
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>勤怠管理</title>
+  <script defer src="main.js"></script>
+</head>
+<body>
+  <h1>勤怠記録</h1>
+  <form id="recordForm">
+    名前: <input type="text" id="user"><br>
+    日付: <input type="date" id="date"><br>
+    ステータス:
+    <select id="status">
+      <option value="出勤">出勤</option>
+      <option value="遅刻">遅刻</option>
+      <option value="早退">早退</option>
+    </select><br>
+    <button type="submit">記録</button>
+  </form>
+  <div id="message"></div>
+</body>
+</html>
+
+
+⸻
+
+🔌 3. JavaScriptでFlaskと通信（frontend/main.js）
+
+document.getElementById("recordForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const user = document.getElementById("user").value;
+  const date = document.getElementById("date").value;
+  const status = document.getElementById("status").value;
+
+  const res = await fetch("http://localhost:5000/api/record", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ user, date, status })
+  });
+
+  const result = await res.json();
+  document.getElementById("message").textContent = result.message;
+});
+
+
+⸻
+
+🚀 4. 実行手順
+
+✅ Flask（バックエンド）起動
+
+cd backend
+python app.py
+
+✅ Node.js http-serverでフロント配信
+
+cd frontend
+npx http-server -p 8080
+
+ブラウザで http://localhost:8080 にアクセス → 入力 → Flask API に POST → DB に保存
+
+⸻
+
+✅ 注意点
+	•	Flask側で flask_cors を使って CORS を許可しないと、ブラウザのセキュリティ制限で通信できません。
+	•	http-server は静的ファイル配信に限定されるため、APIは別ドメインになります（そのためCORSが必要）。
+
+⸻
+
+💡 拡張案
+	•	データの取得・表示機能の追加（/api/history を JS で呼び出す）
+	•	CSVエクスポートやフィルタリング機能
+	•	バックエンドを FastAPI に変更して高速化
+	•	データベースを PostgreSQL に切り替えて本格運用
+
+⸻
+
+この構成で、Node.js をあくまで静的ファイル配信専用にして、Flask がデータベース処理を担当する分業がうまく成立します。必要であれば、ログイン認証付きの構成や、FastAPIへの移行などもご案内できます。
