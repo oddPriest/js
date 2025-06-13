@@ -18,26 +18,26 @@ dir 構成（フロントエンド・バックエンド）
 │   └── public/（CSS/JSなど）
 │
 └── attendance-backend/
-├── manage.py
-├── config/                      ← プロジェクト設定（Django本体）
-│   ├── __init__.py
-│   ├── settings.py              ← 設定ファイル（CORSやDBなど）
-│   ├── urls.py                  ← ルーティング定義
-│   └── wsgi.py
-│
-├── attendance/                  ← 勤怠アプリ（アプリケーション本体）
-│   ├── __init__.py
-│   ├── admin.py                 ← Django管理画面用（任意）
-│   ├── apps.py
-│   ├── models.py                ← 勤怠・ユーザーモデル定義
-│   ├── serializers.py           ← Django REST Framework用
-│   ├── views.py                 ← APIロジック
-│   ├── urls.py                  ← エンドポイントルーティング
-│   └── tests.py
-│
-├── db.sqlite3                   ← SQLiteデータベース（またはPostgreSQL等）
-├── requirements.txt             ← 依存パッケージリスト
-└── README.md                    ← ドキュメント（任意）
+    ├── manage.py
+    ├── config/                      ← プロジェクト設定（Django本体）
+    │   ├── __init__.py
+    │   ├── settings.py              ← 設定ファイル（CORSやDBなど）
+    │   ├── urls.py                  ← ルーティング定義
+    │   └── wsgi.py
+    │
+    ├── attendance/                  ← 勤怠アプリ（アプリケーション本体）
+    │   ├── __init__.py
+    │   ├── admin.py                 ← Django管理画面用（任意）
+    │   ├── apps.py
+    │   ├── models.py                ← 勤怠・ユーザーモデル定義
+    │   ├── serializers.py           ← Django REST Framework用
+    │   ├── views.py                 ← APIロジック
+    │   ├── urls.py                  ← エンドポイントルーティング
+    │   └── tests.py
+    │
+    ├── db.sqlite3                   ← SQLiteデータベース（またはPostgreSQL等）
+    ├── requirements.txt             ← 依存パッケージリスト
+    └── README.md                    ← ドキュメント（任意）
 
 <!DOCTYPE html>
 <html lang="ja">
