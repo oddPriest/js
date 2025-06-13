@@ -7,10 +7,11 @@ const path = require('path'); // パス指定
 const url = require('url');
 
 // ポートとパスを指定
-const PORT = 3000; // ポート番号指定
+const PORT = 8080; // ポート番号指定 or 3000
 const logDir = path.join(__dirname, 'logs'); // ログディレクトリのパス
 const dataDir = path.join(__dirname, 'logs'); // ユーザーデータのディレクトリパス
 const publicDir = path.join(__dirname, 'public'); // 静的ファイルのディレクトリパス
+const viewsDir = path.join(__dirname, 'views'); // 動的ファイル
 
 // 記録のないユーザーは新規でjsonファイル形式で作成 (app/logs/**(username).json)
 if (!fs.existsSync(logDir)) {
@@ -139,7 +140,7 @@ if (method === 'POST' && parsedUrl.pathname === '/log') {
         res.end(JSON.stringify(logs));
 
     } else {
-        let filePath = path.join(publicDir, parsedUrl.pathname === '/' ? 'index.html' : parsedUrl.pathname);
+        let filePath = path.join(viewsDir, publicDir, parsedUrl.pathname === '/' ? 'index.html' : parsedUrl.pathname);
         const ext = path.extname(filePath).toLowerCase();
         const contentTypes = {
             '.html': 'text/html',
@@ -150,8 +151,6 @@ if (method === 'POST' && parsedUrl.pathname === '/log') {
         sendFile(res, filePath, contentType);
     }
 });
-
-
 
 // モジュールとしてエクスポート
 module.exports = {
