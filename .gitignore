@@ -1,3 +1,5 @@
 attendance-app/attendance-frontend/package.json
 attendance-app/attendance-frontend/package-lock.json
 attendance-app/attendance-frontend/node_modules/
+.venv/
+esc/
