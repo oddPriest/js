@@ -43,3 +43,10 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.get_category_display()} - {self.at_date} - {self.user.username}"
+
+class AttendanceRecord(models.Model):
+    username = models.CharField(max_length=100)
+    date = models.DateField()
+    status = models.CharField(max_length=20)  # late, early, absent, presentなど
+    created_at = models.DateTimeField(auto_now_add=True)
+    

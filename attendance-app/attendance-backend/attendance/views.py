@@ -9,19 +9,30 @@ from .forms import CustomLoginForm
 from .forms import ApplicationForm
 from .models import Application
 from django.contrib.auth import logout
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import AttendanceRecord
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
     authentication_form = CustomLoginForm
 
-@api_view(['POST'])
-def attendance_create(request):
-    serializer = AttendanceSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
+@csrf_exempt
+def add_record(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        AttendanceRecord.objects.create(
+            username=data['username'],
+            date=data['date'],
+            status=data['status']
+        )
+        return JsonResponse({'message': '記録追加成功'})
+    return JsonResponse({'error': 'POSTメソッドを使ってください'}, status=400)
+
+def get_records(request):
+    records = list(AttendanceRecord.objects.values())
+    return JsonResponse(records, safe=False)
 
 @login_required
 def dashboard_attendance(request):

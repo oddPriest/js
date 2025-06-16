@@ -11,5 +11,6 @@ urlpatterns = [
     path('edit/<int:pk>/', views.edit_attendance, name='edit_attendance'),
     path('application_form/', views.application_form, name='application_form'),
     path('application_list/', views.application_list, name='application_list'),
-    path('api/attendance/', attendance_create),
+    path('add/', views.add_record),
+    path('records/', views.get_records),
 ]

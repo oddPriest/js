@@ -92,7 +92,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/dashboard/' 
 LOGOUT_REDIRECT_URL = '/login/'  
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:8080']
+
+CORS_ALLOW_ALL_ORIGINS = True  # 開発中のみ
+# CORS_ALLOWED_ORIGINS = ['http://localhost:8080']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

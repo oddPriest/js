@@ -9,9 +9,11 @@ const url = require('url');
 // ポートとパスを指定
 const PORT = 8080; // ポート番号指定 or 3000
 const logDir = path.join(__dirname, 'logs'); // ログディレクトリのパス
-const dataDir = path.join(__dirname, 'logs'); // ユーザーデータのディレクトリパス
+const dataDir = logDir; // ユーザーデータのディレクトリパス
 const publicDir = path.join(__dirname, 'public'); // 静的ファイルのディレクトリパス
 const viewsDir = path.join(__dirname, 'views'); // 動的ファイル
+
+
 
 // 記録のないユーザーは新規でjsonファイル形式で作成 (app/logs/**(username).json)
 if (!fs.existsSync(logDir)) {
@@ -27,7 +29,7 @@ function loadUserLog(username) {
 
 function saveUserLog(username, logs) {
     const filePath = path.join(dataDir, `${username}.json`);
-    fs.writeFileSync(filePath, JSON.stringify(logs, null, 3)); 
+    fs.writeFileSync(filePath, JSON.stringify(logs, null, 2)); 
 }
 // 遅刻と早退(計3回)を欠席1回として計上する
 function calculateAbsences(logs) {

@@ -1,3 +1,17 @@
+document.getElementById("submit").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const user_id = document.getElementById("userId").value;
+
+      await fetch("http://localhost:8000/api/add/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id }),
+      });
+
+      alert("記録を送信しました");
+});
+
+
 document.getElementById('shutdownBtn').addEventListener('click', async (e) => {
   e.preventDefault();
   const confirmed = confirm("本当にサーバーを停止しますか？");
