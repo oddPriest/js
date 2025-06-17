@@ -1,5 +1,6 @@
-attendance-app/attendance-frontend/package.json
-attendance-app/attendance-frontend/package-lock.json
-attendance-app/attendance-frontend/node_modules/
+attendance-app/frontend-node/package.json
+attendance-app/frontend-node/package-lock.json
+attendance-app/frontend-node/node_modules/
 .venv/
 esc/
+rollcall-app/

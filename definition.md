@@ -1,6 +1,8 @@
 ## 以下、勤怠管理アプリをリファクタリング
 # リエンジニアリングにより仕様書作成
 
+* Djangoによる実装
+
 Node.js (http-server ) : フロントエンド
 Django(REST API) : バックエンド
 
@@ -39,24 +41,6 @@ dir 構成（フロントエンド・バックエンド）
     ├── requirements.txt  ← 依存パッケージリスト
     └── README.md         ← ドキュメント（任意）
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>管理</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>##システム</h1>
-  <label>ユーザーID: <input type="text" id="userId"></label>
-  <button onclick="##linkClass()">##</button>
-  <p id="retVal"></p>
-
-  <script src="script.js"></script>
-</body>
-</html>
-
-
 async function clockIn() {
   const userId = document.getElementById('userId').value;
   const resultElem = document.getElementById('result');
@@ -90,26 +74,7 @@ async function clockIn() {
   }
 }
 
-styles.css
 
-body {
-  font-family: sans-serif;
-  padding: 2rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 1rem;
-}
-
-button {
-  padding: 0.5rem 1rem;
-}
-
-#result {
-  margin-top: 1rem;
-  font-weight: bold;
-}
 
 
 起動手順（http-server）
@@ -177,6 +142,13 @@ CORS_ALLOW_ALL_ORIGINS = True  # または CORS_ALLOWED_ORIGINS = ['http://local
 
 (試案)
 ・ 取得DBをもとにFastAPIを用いて、機械学習によってユーザーにレスポンス(提案やFBなど)
+
+
+
+
+
+* Flaskによる実装
+
 
 Python（Flask）でバックエンド、Node.js の http-server を用いた静的ファイルサーバーとしてフロントエンドを構成する勤怠管理アプリの基本的な構成と実装手順は以下のとおりです。
 
