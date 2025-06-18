@@ -6,3 +6,6 @@ esc/
 rollcall-app/backend/aws
 rollcall-app/backend/venv
 rollcall-app/.env
+.metadata/
+RemoteSystemsTempFiles/
+rollcall-app/backend/__pycache__/
