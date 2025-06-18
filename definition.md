@@ -330,3 +330,217 @@ npx http-server -p 8080
 ⸻
 
 この構成で、Node.js をあくまで静的ファイル配信専用にして、Flask がデータベース処理を担当する分業がうまく成立します。必要であれば、ログイン認証付きの構成や、FastAPIへの移行などもご案内できます。
+
+* AWS導入
+
+
+Node.js（http-server）を使ったシンプルなフロントエンドと、Flask + AWS（DynamoDB & S3）による堅牢なバックエンドの構成は、スケーラビリティが高く、柔軟な記録システムを構築するのに適しています。
+
+以下に、ディレクトリ構成、環境構築、必要パッケージ、基本的なセットアップ手順をステップ形式で解説します。
+
+⸻
+
+✅ ディレクトリ構成（全体像）
+
+record-system/
+├── frontend/       # Node.js + http-server 用静的ファイル
+│   ├── index.html
+│   ├── main.js
+│   └── style.css
+├── backend/        # Flask アプリ + AWS操作ロジック
+│   ├── app.py                # Flask本体
+│   ├── requirements.txt      # pip依存
+│   ├── config.py             # AWSキーなど環境変数の読み込み
+│   └── aws/                  # AWS関連処理をモジュール化
+│       ├── dynamo.py
+│       └── s3.py
+├── .env                # AWSアクセスキーなど（git管理除外）
+├── .gitignore
+└── README.md
+
+
+⸻
+
+🔧 1. Python（Flaskバックエンド）環境構築手順
+
+必要パッケージ
+
+cd backend/
+python -m venv venv
+source venv/bin/activate   
+  # Windowsは venv\Scripts\activate
+pip install flask boto3 python-dotenv
+
+requirements.txt の内容
+
+Flask
+boto3
+python-dotenv
+
+.env の内容（AWS情報）
+
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_DEFAULT_REGION=ap-northeast-1
+DYNAMODB_TABLE_NAME=RecordTable
+S3_BUCKET_NAME=record-app-files
+
+config.py（Flask内で.envを読み込み）
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+REGION = os.getenv("AWS_DEFAULT_REGION")
+DYNAMODB_TABLE = os.getenv("DYNAMODB_TABLE_NAME")
+S3_BUCKET = os.getenv("S3_BUCKET_NAME")
+
+
+⸻
+
+🧩 2. AWS操作モジュール（例）
+
+aws/dynamo.py
+
+import boto3
+from config import REGION, DYNAMODB_TABLE
+
+dynamodb = boto3.resource('dynamodb', region_name=REGION)
+table = dynamodb.Table(DYNAMODB_TABLE)
+
+def save_record(data):
+    table.put_item(Item=data)
+
+def get_records():
+    response = table.scan()
+    return response['Items']
+
+aws/s3.py
+
+import boto3
+from config import REGION, S3_BUCKET
+
+s3 = boto3.client('s3', region_name=REGION)
+
+def upload_file(file_obj, filename):
+    s3.upload_fileobj(file_obj, S3_BUCKET, filename)
+
+def generate_file_url(filename):
+    return s3.generate_presigned_url('get_object', Params={'Bucket': S3_BUCKET, 'Key': filename}, ExpiresIn=3600)
+
+
+⸻
+
+🚀 3. Flask API本体（app.py）
+
+from flask import Flask, request, jsonify
+from aws import dynamo, s3
+
+app = Flask(__name__)
+
+@app.route("/api/record", methods=["POST"])
+def record_data():
+    data = request.json
+    dynamo.save_record(data)
+    return jsonify({"message": "記録を保存しました"})
+
+@app.route("/api/records", methods=["GET"])
+def list_records():
+    records = dynamo.get_records()
+    return jsonify(records)
+
+@app.route("/api/upload", methods=["POST"])
+def upload_file():
+    file = request.files['file']
+    s3.upload_file(file, file.filename)
+    return jsonify({"url": s3.generate_file_url(file.filename)})
+
+if __name__ == "__main__":
+    app.run(port=5000)
+
+
+⸻
+
+🌐 4. フロントエンド構成（http-server）
+
+セットアップ
+
+cd frontend/
+npm install -g http-server
+http-server -p 3000
+
+index.html 例（APIにPOST送信）
+
+<form id="record-form">
+  <input type="text" name="username" placeholder="名前" required />
+  <input type="date" name="date" required />
+  <button type="submit">記録</button>
+</form>
+
+<script>
+document.getElementById("record-form").onsubmit = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    username: form.username.value,
+    date: form.date.value,
+  };
+  const res = await fetch('http://localhost:5000/api/record', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  alert((await res.json()).message);
+};
+</script>
+
+
+⸻
+
+☁️ AWS 初期準備（事前に行うこと）
+	1.	S3バケット作成（例: record-app-files）
+	2.	DynamoDBテーブル作成
+	•	テーブル名: RecordTable
+	•	主キー: id (文字列型)など
+	3.	IAMユーザー or ロール作成
+	•	必要なポリシー：
+	•	AmazonS3FullAccess（開発用）
+	•	AmazonDynamoDBFullAccess（開発用）
+
+⸻
+
+✅ 起動確認フロー
+	1.	Flaskサーバー起動（バックエンド）
+
+cd backend
+flask run
+
+
+	2.	フロントエンドサーバー起動（別ターミナル）
+
+cd frontend
+http-server -p 3000
+
+
+	3.	ブラウザで http://localhost:3000 にアクセスし記録送信！
+
+⸻
+
+🔒 補足：セキュリティの注意
+	•	.env ファイルは 必ず .gitignore に追加
+	•	本番環境では IAMロールベースの認証や署名付きURLの活用が重要
+	•	CORSポリシーの設定に注意（必要ならFlask-CORSの導入）
+
+⸻
+
+🎯 次のステップ候補
+	•	ファイルアップロードUIの追加（画像 or ドキュメント）
+	•	JWT認証を Flask に組み込む
+	•	CloudFront + S3 による静的ホスティング導入
+
+⸻
+
+必要であれば、次は「DynamoDBのテーブル構成設計」や「S3の署名付きURLとセキュリティ強化」などの実装補助もできます。どこから進めたいか教えてください！

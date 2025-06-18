@@ -1,6 +1,8 @@
 attendance-app/frontend-node/package.json
 attendance-app/frontend-node/package-lock.json
 attendance-app/frontend-node/node_modules/
-.venv/
+attendance-app\attendance-backend\.venv
 esc/
-rollcall-app/
+rollcall-app/backend/aws
+rollcall-app/backend/venv
+rollcall-app/.env
