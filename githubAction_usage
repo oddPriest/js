@@ -1,0 +1,165 @@
+GitHub Actions（ギットハブ アクション）は、**GitHub上のリポジトリに対して自動で処理を実行する仕組み（CI/CD）**を構築できるGitHubの機能です。ビルド・テスト・デプロイ・コード整形・Slack通知などが自動化でき、無料で使えるので学生や個人開発者にも非常に人気があります。
+
+⸻
+
+🔧 GitHub Actions とは？
+
+GitHub Actions は「ワークフロー（workflow）」という単位で構成され、特定のイベントをトリガーにして処理を自動実行します。
+
+例：こんなことができる！
+	•	コードを push したら自動テストを実行
+	•	pull request 時にコード整形を確認
+	•	main ブランチにマージしたら Azure や Vercel に自動デプロイ
+	•	issue やPRの作成に応じてラベルを自動付与
+	•	定期的なバッチ処理やバックアップ実行
+
+⸻
+
+🛠️ 基本構成（.github/workflows 配下）
+
+# .github/workflows/deploy.yml
+name: Deploy App
+
+on:
+  push:
+    branches: [ main ]  # mainブランチにpushされたとき
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: リポジトリをチェックアウト
+      uses: actions/checkout@v3
+
+    - name: Node.js セットアップ
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: パッケージインストール
+      run: npm install
+
+    - name: ビルド実行
+      run: npm run build
+
+    - name: デプロイ（例：Azure Static Web Apps）
+      uses: azure/static-web-apps-deploy@v1
+      with:
+        azure_static_web_apps_api_token: ${{ secrets.AZURE_TOKEN }}
+
+
+⸻
+
+📦 GitHub Actions の導入方法（基本の流れ）
+
+① プロジェクト作成または既存の GitHub リポジトリを使用
+
+git init
+git add .
+git commit -m "initial commit"
+git remote add origin https://github.com/ユーザー名/リポジトリ名
+git push -u origin main
+
+
+⸻
+
+② .github/workflows フォルダを作成し、YAMLファイルを配置
+
+mkdir -p .github/workflows
+touch .github/workflows/ci.yml
+
+中身を以下のように記述します（Node.jsプロジェクトの例）：
+
+name: Node.js CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - run: npm install
+    - run: npm test
+
+
+⸻
+
+③ GitHubにプッシュ → Actions が自動で実行される
+
+git add .
+git commit -m "add GitHub Actions workflow"
+git push
+
+リポジトリの「Actions」タブに移動すると、ワークフローが実行される様子が確認できます。
+
+⸻
+
+🤖 よく使われる公式Actions一覧
+
+Action	説明
+actions/checkout	ソースコードをチェックアウト
+actions/setup-node	Node.jsのバージョン指定インストール
+actions/setup-python	Python環境をセットアップ
+docker/build-push-action	Dockerイメージのビルドとプッシュ
+azure/static-web-apps-deploy	Azure Static Web Appsへのデプロイ
+peaceiris/actions-gh-pages	GitHub Pagesへのデプロイ
+
+
+⸻
+
+🔐 シークレット情報の管理（APIキーやパスワード）
+	•	GitHub のリポジトリ画面 → 「Settings」→「Secrets and variables」→「Actions」
+	•	ここに AZURE_TOKEN や API_KEY などの名前で安全に登録し、ワークフロー内で ${{ secrets.AZURE_TOKEN }} のように使用
+
+⸻
+
+🧪 初学者におすすめのワークフロー例
+
+目的	サンプル
+JavaScript の lint チェック	ESLint を実行して PR 時に確認
+Python プロジェクトのテスト	pytest を自動実行（actions/setup-python 使用）
+静的サイトのデプロイ	GitHub Pages や Azure Static Web Apps への自動公開
+定期実行バッチ	schedule: を使って cron 実行も可能
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 毎日午前0時に実行
+
+
+⸻
+
+📚 学生や個人利用の上限（無料枠）
+
+GitHub Free プランでは：
+
+ランナー	月あたり使用可能分数（Public）	Private Repo も含めた分数
+ubuntu-latest	無制限（Public）	2,000分/月（無料）
+
+
+⸻
+
+🔚 まとめ：GitHub Actions はこんな人におすすめ
+
+タイプ	理由
+Web開発初学者	テストやデプロイの自動化が簡単
+チーム開発を始める学生	プルリクごとのCIでミス防止・コード品質管理
+クラウド学習中の学生	AzureやVercelとの連携で即時公開が可能
+機械学習/バッチ処理	定期実行や学習結果の自動記録などにも使える
+
+
+⸻
+
+✅ おすすめ次のステップ
+	•	GitHub Actions + Azure Static Web Apps の連携を試してみる
+	•	Python の pytest 自動テストワークフローを作成
+	•	GitHub Pages にポートフォリオを自動公開
+
+⸻
+
+ご希望があれば、「Node.js/Flask アプリを GitHub Actions 経由で Azure に自動デプロイする構成」や、「GitHub Copilot と連携した自動開発パイプライン」などのサンプルもご提供できます！やってみたい内容を教えてください。
