@@ -1,11 +1,12 @@
+esc/
+.metadata/
+RemoteSystemsTempFiles/
 attendance-app/frontend-node/package.json
 attendance-app/frontend-node/package-lock.json
 attendance-app/frontend-node/node_modules/
-attendance-app\attendance-backend\.venv
-esc/
-rollcall-app/backend/aws
+attendance-app/attendance-backend/.venv/
 rollcall-app/backend/venv
+rollcall-app/backend/aws
 rollcall-app/.env
-.metadata/
-RemoteSystemsTempFiles/
 rollcall-app/backend/__pycache__/
+rollcall-app/backend/utils/__pycache__
