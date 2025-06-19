@@ -1,22 +1,8 @@
+
 <form id="record-form">
   <input type="text" name="username" placeholder="名前" required />
   <input type="date" name="date" required />
   <button type="submit">記録</button>
 </form>
 
-<script>
-document.getElementById("record-form").onsubmit = async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  const data = {
-    username: form.username.value,
-    date: form.date.value,
-  };
-  const res = await fetch('http://localhost:5000/api/record', {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-  alert((await res.json()).message);
-};
-</script>
+<script src="./form.js"></script>
